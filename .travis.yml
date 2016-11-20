@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+- node
+services:
+- mongodb
+before_deploy:
+- npm run build
+deploy:
+  provider: npm
+  email: anthony.kerz@gmail.com
+  api_key:
+    secure: s6YFTJSWFuyW+QY9mo+9oskWAMEb4Z3G/fLDj3wm8ctgj23uOfIxrhsEU91Gk0qrR/iCkTbnM9D/Ahxk4TABpTrFoezqQlDY3yUxN4i5freGCcMaiGBgZe8O1KkPDxo1Vgmt+TKngNsBc4suzEB4BbXHYyyvTdCXH3N4ov2/5oMZuaYjZynuOAFfSjPmzp4fhSUyoSKGFcr6/m6OKbQyze03ZZCBXTJymp3OjAyTHkfGNpimpcFi5G7J1iaygH6XWvqmYkXhGYZNlRmYk0lUD2Sk7THqZFzgk4rbbFwGaQuw2FaqTwQ1YrV2WYHIzIMy4ub0Rm1R5pYBLDiOBgzIg3mcvoWfAMpmyrAiXnHf4Yyfyy+2OZ9SJTYYr3r5MdilXXeKSjBmR/BxJigRCPqdZivSvbsMjJKjd8Trb2Hbk16lkZD2eMgvDYA1H7A5gwX+fWYfli8bVoE7AktuHgTiBjrIlI7Ji/sJL+/LBqpR2vYERZ7kD1C0UCqXoe4+VAQM4WY2xnd/AW2C/3+Zy28tFrL4p3MOJ7m8DQ74uVSHWuqHbEzhXcRdEr/fAbCNkNugfuIGsmRHZvHAtfkbqqCkDswBoe2umfwM+pgS6UzyAWyOq69A/DC6wTDCldqMOrZwvFGv+PjvXuHTGwnk+0vr0PfWWl6DYhKFEtryoi+dAsg=
+  skip_cleanup: true
+  on:
+    branch: master
+    condition: "-z $TRAVIS_TAG"
