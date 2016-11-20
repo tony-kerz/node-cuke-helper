@@ -25,7 +25,7 @@
     "debug": "^2.3.2",
     "helpr": "^0.1.5",
     "lodash": "^4.17.0",
-    "test-helpr": "^0.1.7"
+    "test-helpr": "^0.1.8"
   },
   "devDependencies": {
     "ava": "git+https://github.com/avajs/ava.git#056f227",

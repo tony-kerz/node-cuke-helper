@@ -1,11 +1,10 @@
 import debug from 'debug'
 import assert from 'assert'
 import _ from 'lodash'
-import config from 'config'
 import axios from 'axios'
 import queryString from 'querystring'
 import {diffConsole} from 'helpr'
-import {evalInContext, isLike, asTemplate, setState, getState} from 'test-helpr'
+import {evalInContext, isLike, setState, getState, getUrl} from 'test-helpr'
 
 const dbg = debug('app:http:steps')
 
@@ -88,7 +87,7 @@ export default function(context){
 
 async function httpGet({path, query, context}) {
   try {
-    const url = getUrl({path, context})
+    const url = getUrl(path, {context})
     // http://stackoverflow.com/a/17829480/2371903
     // const params = JSON.parse(JSON.stringify(queryString.parse(query)))
     // https://github.com/mzabriskie/axios/issues/436
@@ -107,7 +106,7 @@ async function httpGet({path, query, context}) {
 
 async function httpUpdate({action, path, body, context}) {
   try {
-    const url = getUrl({path, context})
+    const url = getUrl(path, {context})
     dbg('http-post: action=%o, url=%o, body=%o', action, url, body)
     const response = (action == 'POST') ? await axios.post(url, body) : await axios.put(url, body)
     setResponseState(response)
@@ -120,7 +119,7 @@ async function httpUpdate({action, path, body, context}) {
 
 async function httpDelete({path, context}) {
   try {
-    const url = getUrl({path, context})
+    const url = getUrl(path, {context})
     dbg('http-delete: url=%o', url)
     const response = await axios.delete(url)
     setResponseState(response)
@@ -129,10 +128,6 @@ async function httpDelete({path, context}) {
     const {response} =  error  // coerse to response object
     setResponseState(response)
   }
-}
-
-function getUrl({path, context}){
-  return `http://localhost:${config.get('listener.port')}${evalInContext({js: asTemplate(path), context})}`
 }
 
 function setResponseState(response){
