@@ -1,23 +1,28 @@
-import debug from 'debug'
 import assert from 'assert'
+import queryString from 'querystring'
+import debug from 'debug'
+import config from 'config'
 import _ from 'lodash'
 import axios from 'axios'
-import queryString from 'querystring'
 import {diffConsole} from 'helpr'
 import {evalInContext, isLike, setState, getState, getUrl} from 'test-helpr'
 
+/* eslint-disable new-cap */
+
+const port = config.get('listener.port')
+
 const dbg = debug('app:http:steps')
 
-export default function(context){
-  return function(){
+export default function (context) {
+  return function () {
     this.Given(/^the following initial state:$/, function (stateString) {
       try {
         const state = evalInContext({js: stateString, context})
         dbg('given-state: state=%o', state)
         setState(state)
-      } catch (error) {
-        dbg('given-state: caught error=%o', error)
-        throw error
+      } catch (err) {
+        dbg('given-state: caught error=%o', err)
+        throw err
       }
     })
 
@@ -75,7 +80,7 @@ export default function(context){
     this.Then(/^our resultant state should be like:$/, function (expectedString, callback) {
       const expected = evalInContext({js: expectedString, context})
       dbg('our-state-should-be-like: expected=%o, actual=%o', expected, getState())
-      const actual= getState()
+      const actual = getState()
       if (!isLike({expected, actual})) {
         diffConsole({actual, expected})
         throw new Error('actual != expected')
@@ -87,7 +92,7 @@ export default function(context){
 
 async function httpGet({path, query, context}) {
   try {
-    const url = getUrl(path, {context})
+    const url = getUrl(path, {context, port})
     // http://stackoverflow.com/a/17829480/2371903
     // const params = JSON.parse(JSON.stringify(queryString.parse(query)))
     // https://github.com/mzabriskie/axios/issues/436
@@ -97,39 +102,39 @@ async function httpGet({path, query, context}) {
     dbg('http-get: url=%o, params=%o', url, params)
     const response = await axios.get(url, {params})
     setResponseState(response)
-  } catch (error) {
-    dbg('caught error=%o', error)
-    const {response} =  error  // coerse to response object
+  } catch (err) {
+    dbg('caught error=%o', err)
+    const {response} = err  // coerse to response object
     setResponseState(response)
   }
 }
 
 async function httpUpdate({action, path, body, context}) {
   try {
-    const url = getUrl(path, {context})
+    const url = getUrl(path, {context, port})
     dbg('http-post: action=%o, url=%o, body=%o', action, url, body)
-    const response = (action == 'POST') ? await axios.post(url, body) : await axios.put(url, body)
+    const response = (action === 'POST') ? await axios.post(url, body) : await axios.put(url, body)
     setResponseState(response)
-  } catch (error) {
-    dbg('caught error=%o', error)
-    const {response} =  error  // coerse to response object
+  } catch (err) {
+    dbg('caught error=%o', err)
+    const {response} = err  // coerse to response object
     setResponseState(response)
   }
 }
 
 async function httpDelete({path, context}) {
   try {
-    const url = getUrl(path, {context})
+    const url = getUrl(path, {context, port})
     dbg('http-delete: url=%o', url)
     const response = await axios.delete(url)
     setResponseState(response)
-  } catch (error) {
-    dbg('caught error=%o', error)
-    const {response} =  error  // coerse to response object
+  } catch (err) {
+    dbg('caught error=%o', err)
+    const {response} = err  // coerse to response object
     setResponseState(response)
   }
 }
 
-function setResponseState(response){
+function setResponseState(response) {
   setState({response: _.pick(response, ['status', 'headers', 'data'])})
 }

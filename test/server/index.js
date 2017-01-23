@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-unassigned-import
 import 'babel-polyfill'
 import express from 'express'
 import bodyParser from 'body-parser'
@@ -10,30 +11,30 @@ const dbg = debug('test:server')
 const app = express()
 app.use(bodyParser.json())
 
-process.on('unhandledRejection', (err)=>{
+process.on('unhandledRejection', err => {
   dbg('unhandled-rejection: %o', err)
   process.exit(1)
 })
 
-app.get('/', (req, res)=>{
+app.get('/', (req, res) => {
   dbg('index: state=%o', getState())
   res.send(getState('data'))
 })
 
-app.get('/:id', (req, res)=>{
+app.get('/:id', (req, res) => {
   dbg('get: params=%o, state=%o', req.params, getState())
   const result = _.find(getState('data'), {_id: req.params.id})
   result ? res.send(result) : res.status(404).send('not found')
 })
 
-app.post('/', (req, res)=>{
+app.post('/', (req, res) => {
   dbg('post: body=%o', req.body)
   getState('data').push(req.body)
   dbg('post: state=%o', getState())
   res.status(201).send('created')
 })
 
-app.put('/:id', (req, res)=>{
+app.put('/:id', (req, res) => {
   dbg('put: id=%o, body=%o', req.params.id, req.body)
   const data = getState('data')
   const idx = _.findIndex(data, {_id: req.params.id})
@@ -46,7 +47,7 @@ app.put('/:id', (req, res)=>{
   }
 })
 
-app.delete('/:id', (req, res)=>{
+app.delete('/:id', (req, res) => {
   dbg('delete: id=%o', req.params.id)
   const data = getState('data')
   const idx = _.findIndex(data, {_id: req.params.id})
@@ -60,12 +61,12 @@ app.delete('/:id', (req, res)=>{
 })
 
 // eslint-disable-next-line no-unused-vars
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   dbg(err.stack)
   res.status(500).send(`error: ${err}`)
 })
 
 const port = config.get('listener.port')
-app.listen(port, ()=>{
+app.listen(port, () => {
   dbg('listening on port=%o', port)
 })
