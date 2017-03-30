@@ -4,8 +4,8 @@ import debug from 'debug'
 import config from 'config'
 import _ from 'lodash'
 import axios from 'axios'
-import {diffConsole} from 'helpr'
-import {evalInContext, isLike, setState, getState, getUrl} from 'test-helpr'
+import {diffConsole, isLike, isLikeHooks} from 'helpr'
+import {evalInContext, setState, getState, getUrl} from 'test-helpr'
 
 /* eslint-disable new-cap */
 
@@ -58,7 +58,7 @@ export default function (context) {
       const expected = evalInContext({js: expectedString, context})
       dbg('then-http-response-should-be-like: expected=%o', expected)
       const {data: actual} = getState('response')
-      if (!isLike({expected, actual})) {
+      if (!isLike({expected, actual, hooks: [isLikeHooks.assert]})) {
         diffConsole({actual, expected})
         throw new Error('actual != expected')
       }

@@ -1,6 +1,6 @@
 {
   "name": "cuke-helpr",
-  "version": "0.1.4",
+  "version": "0.1.7",
   "description": "",
   "main": "dist/index.js",
   "repository": {
@@ -21,9 +21,9 @@
     "axios": "^0.15.3",
     "config": "^1.25.1",
     "debug": "^2.6.1",
-    "helpr": "^0.9.0",
+    "helpr": "^0.12.0",
     "lodash": "^4.17.4",
-    "test-helpr": "^0.2.0"
+    "test-helpr": "^0.3.2"
   },
   "devDependencies": {
     "babel-cli": "^6.23.0",
