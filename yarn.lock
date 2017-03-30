@@ -3240,9 +3240,9 @@ tar@~2.2.1:
     fstream "^1.0.2"
     inherits "2"
 
-test-helpr@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/test-helpr/-/test-helpr-0.2.0.tgz#3d22748ce91ef31e7f4b8ae6418805db7dc88779"
+test-helpr@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/test-helpr/-/test-helpr-0.3.2.tgz#ce2cb89bc91ec428346a4d6d87a60bfebddab299"
   dependencies:
     debug "^2.6.1"
     fast-safe-stringify "^1.1.6"
