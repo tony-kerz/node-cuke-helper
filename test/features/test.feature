@@ -86,3 +86,16 @@ Feature: test
   Scenario: delete non-existent
     When we HTTP DELETE '/nope'
     Then our HTTP response should have status code 404
+
+  Scenario: user
+    Given we set the following HTTP headers:
+    """
+    {
+      authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjaHIiLCJ1c2VySWQiOiIxMjMiLCJ1c2VyTmFtZSI6ImpvaG4gZG9lIiwiY2xpZW50SWQiOiI0NTYifQ.DiomD9RA_lK_e3lz5Yuic6kvlmLXHQqhcdFFyuQwWj4'
+    }
+    """
+    When we HTTP GET '/user'
+    Then our HTTP response should be like:
+    """
+    { iss: 'chr', userId: '123', userName: 'john doe', clientId: '456' }
+    """

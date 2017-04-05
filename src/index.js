@@ -26,6 +26,17 @@ export default function (context) {
       }
     })
 
+    this.Given(/^we set the following HTTP headers:$/, function (headerString) {
+      try {
+        const headers = evalInContext({js: headerString, context})
+        dbg('given-headers: headers=%o', headers)
+        setState({headers})
+      } catch (err) {
+        dbg('given-headers: caught error=%o', err)
+        throw err
+      }
+    })
+
     this.When(/^we HTTP GET '([^']+)'$/, async function (path) {
       await httpGet({path, context})
     })
@@ -99,8 +110,9 @@ async function httpGet({path, query, context}) {
     // https://github.com/mzabriskie/axios/pull/445
     //
     const params = queryString.parse(query)
-    dbg('http-get: url=%o, params=%o', url, params)
-    const response = await axios.get(url, {params})
+    const headers = getState('headers')
+    dbg('http-get: url=%o, params=%o, headers=%o', url, params, headers)
+    const response = await axios.get(url, {params, headers})
     setResponseState(response)
   } catch (err) {
     dbg('caught error=%o', err)
@@ -112,8 +124,9 @@ async function httpGet({path, query, context}) {
 async function httpUpdate({action, path, body, context}) {
   try {
     const url = getUrl(path, {context, port})
-    dbg('http-post: action=%o, url=%o, body=%o', action, url, body)
-    const response = (action === 'POST') ? await axios.post(url, body) : await axios.put(url, body)
+    const headers = getState('headers')
+    dbg('http-post: action=%o, url=%o, body=%o, headers=%o', action, url, body, headers)
+    const response = (action === 'POST') ? await axios.post(url, body, {headers}) : await axios.put(url, body, {headers})
     setResponseState(response)
   } catch (err) {
     dbg('caught error=%o', err)
@@ -125,8 +138,9 @@ async function httpUpdate({action, path, body, context}) {
 async function httpDelete({path, context}) {
   try {
     const url = getUrl(path, {context, port})
-    dbg('http-delete: url=%o', url)
-    const response = await axios.delete(url)
+    const headers = getState('headers')
+    dbg('http-delete: url=%o, headers=%o', url, headers)
+    const response = await axios.delete(url, {headers})
     setResponseState(response)
   } catch (err) {
     dbg('caught error=%o', err)
