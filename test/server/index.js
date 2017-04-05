@@ -6,6 +6,7 @@ import debug from 'debug'
 import config from 'config'
 import _ from 'lodash'
 import {getState} from 'test-helpr'
+import jwt from 'express-jwt'
 
 const dbg = debug('test:server')
 const app = express()
@@ -16,9 +17,16 @@ process.on('unhandledRejection', err => {
   process.exit(1)
 })
 
+app.use(jwt({secret: 'secret', credentialsRequired: false}))
+
 app.get('/', (req, res) => {
   dbg('index: state=%o', getState())
   res.send(getState('data'))
+})
+
+app.get('/user', (req, res) => {
+  dbg('user: user=%o', req.user)
+  res.send(req.user)
 })
 
 app.get('/:id', (req, res) => {
