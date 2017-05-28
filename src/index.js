@@ -4,6 +4,7 @@ import debug from 'debug'
 import config from 'config'
 import _ from 'lodash'
 import axios from 'axios'
+import {defineSupportCode} from 'cucumber'
 import {diffConsole, isLike, isLikeHooks} from 'helpr'
 import {evalInContext, setState, getState, getUrl} from 'test-helpr'
 
@@ -13,9 +14,9 @@ const port = config.get('listener.port')
 
 const dbg = debug('app:http:steps')
 
-export default function (context) {
-  return function () {
-    this.Given(/^the following initial state:$/, function (stateString) {
+export default function(context) {
+  defineSupportCode(({Given, When, Then}) => {
+    Given(/^the following initial state:$/, function(stateString) {
       try {
         const state = evalInContext({js: stateString, context})
         dbg('given-state: state=%o', state)
@@ -26,7 +27,7 @@ export default function (context) {
       }
     })
 
-    this.Given(/^we set the following HTTP headers:$/, function (headerString) {
+    Given(/^we set the following HTTP headers:$/, function(headerString) {
       try {
         const headers = evalInContext({js: headerString, context})
         dbg('given-headers: headers=%o', headers)
@@ -37,24 +38,24 @@ export default function (context) {
       }
     })
 
-    this.When(/^we HTTP GET '([^']+)'$/, async function (path) {
+    When(/^we HTTP GET '([^']+)'$/, async function(path) {
       await httpGet({path, context})
     })
 
-    this.When(/^we HTTP GET '([^']+)' with query '([^']+)'$/, async function (path, query) {
+    When(/^we HTTP GET '([^']+)' with query '([^']+)'$/, async function(path, query) {
       await httpGet({path, query, context})
     })
 
-    this.When(/^we HTTP (POST|PUT) '([^']+)' with body:$/, async function (action, path, bodyString) {
+    When(/^we HTTP (POST|PUT) '([^']+)' with body:$/, async function(action, path, bodyString) {
       const body = evalInContext({js: bodyString, context})
       await httpUpdate({action, path, body, context})
     })
 
-    this.When(/^we HTTP DELETE '([^']+)'$/, async function (path) {
+    When(/^we HTTP DELETE '([^']+)'$/, async function(path) {
       await httpDelete({path, context})
     })
 
-    this.Then(/^our HTTP response should be '([^']+)'$/, function (expectedString, callback) {
+    Then(/^our HTTP response should be '([^']+)'$/, function(expectedString, callback) {
       const expected = evalInContext({js: expectedString, context})
       dbg('then-http-response-should-be: expected=%o', expected)
       const {data: actual} = getState('response')
@@ -65,7 +66,7 @@ export default function (context) {
       callback()
     })
 
-    this.Then(/^our HTTP response should be like:$/, function (expectedString, callback) {
+    Then(/^our HTTP response should be like:$/, function(expectedString, callback) {
       const expected = evalInContext({js: expectedString, context})
       dbg('then-http-response-should-be-like: expected=%o', expected)
       const {data: actual} = getState('response')
@@ -76,19 +77,19 @@ export default function (context) {
       callback()
     })
 
-    this.Then(/^our HTTP response should have status code (\d+)$/, function (status, callback) {
+    Then(/^our HTTP response should have status code (\d+)$/, function(status, callback) {
       const error = getState('response')
       assert.equal(error.status, status)
       callback()
     })
 
-    this.Then(/^our HTTP headers should include '([^']+)'$/, function (header, callback) {
+    Then(/^our HTTP headers should include '([^']+)'$/, function(header, callback) {
       const response = getState('response')
       assert(_.has(response.headers, header))
       callback()
     })
 
-    this.Then(/^our resultant state should be like:$/, function (expectedString, callback) {
+    Then(/^our resultant state should be like:$/, function(expectedString, callback) {
       const expected = evalInContext({js: expectedString, context})
       dbg('our-state-should-be-like: expected=%o, actual=%o', expected, getState())
       const actual = getState()
@@ -98,7 +99,7 @@ export default function (context) {
       }
       callback()
     })
-  }
+  })
 }
 
 async function httpGet({path, query, context}) {
@@ -116,7 +117,7 @@ async function httpGet({path, query, context}) {
     setResponseState(response)
   } catch (err) {
     dbg('caught error=%o', err)
-    const {response} = err  // coerse to response object
+    const {response} = err // coerse to response object
     setResponseState(response)
   }
 }
@@ -126,11 +127,11 @@ async function httpUpdate({action, path, body, context}) {
     const url = getUrl(path, {context, port})
     const headers = getState('headers')
     dbg('http-post: action=%o, url=%o, body=%o, headers=%o', action, url, body, headers)
-    const response = (action === 'POST') ? await axios.post(url, body, {headers}) : await axios.put(url, body, {headers})
+    const response = action === 'POST' ? await axios.post(url, body, {headers}) : await axios.put(url, body, {headers})
     setResponseState(response)
   } catch (err) {
     dbg('caught error=%o', err)
-    const {response} = err  // coerse to response object
+    const {response} = err // coerse to response object
     setResponseState(response)
   }
 }
@@ -144,7 +145,7 @@ async function httpDelete({path, context}) {
     setResponseState(response)
   } catch (err) {
     dbg('caught error=%o', err)
-    const {response} = err  // coerse to response object
+    const {response} = err // coerse to response object
     setResponseState(response)
   }
 }
