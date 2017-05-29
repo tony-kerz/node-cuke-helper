@@ -11,7 +11,7 @@ Feature: test
     """
 
   Scenario: index
-    When we HTTP GET '/'
+    When we HTTP GET "/"
     Then our HTTP response should be like:
     """
     [
@@ -21,18 +21,18 @@ Feature: test
     """
 
   Scenario: get
-    When we HTTP GET '/${constants.ONE}'
+    When we HTTP GET "/${constants.ONE}"
     Then our HTTP response should be like:
     """
     {_id: '1'}
     """
 
   Scenario: get non-existent
-    When we HTTP GET '/nope'
+    When we HTTP GET "/nope"
     Then our HTTP response should have status code 404
 
   Scenario: create
-    When we HTTP POST '/' with body:
+    When we HTTP POST "/" with body:
     """
     {_id: '3'}
     """
@@ -49,7 +49,7 @@ Feature: test
     """
 
   Scenario: update
-    When we HTTP PUT '/2' with body:
+    When we HTTP PUT "/2" with body:
     """
     {_id: '2', name: 'two'}
     """
@@ -65,14 +65,14 @@ Feature: test
     """
 
   Scenario: update non-existent client
-    When we HTTP PUT '/nope' with body:
+    When we HTTP PUT "/nope" with body:
     """
     {foo: 'bar'}
     """
     Then our HTTP response should have status code 404
 
   Scenario: delete
-    When we HTTP DELETE '/1'
+    When we HTTP DELETE "/1"
     Then our HTTP response should have status code 204
     And our resultant state should be like:
     """
@@ -84,7 +84,7 @@ Feature: test
     """
 
   Scenario: delete non-existent
-    When we HTTP DELETE '/nope'
+    When we HTTP DELETE "/nope"
     Then our HTTP response should have status code 404
 
   Scenario: user
@@ -94,7 +94,7 @@ Feature: test
       authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjaHIiLCJ1c2VySWQiOiIxMjMiLCJ1c2VyTmFtZSI6ImpvaG4gZG9lIiwiY2xpZW50SWQiOiI0NTYifQ.DiomD9RA_lK_e3lz5Yuic6kvlmLXHQqhcdFFyuQwWj4'
     }
     """
-    When we HTTP GET '/user'
+    When we HTTP GET "/user"
     Then our HTTP response should be like:
     """
     { iss: 'chr', userId: '123', userName: 'john doe', clientId: '456' }
