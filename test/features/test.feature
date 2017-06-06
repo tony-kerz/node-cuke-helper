@@ -20,6 +20,16 @@ Feature: test
     ]
     """
 
+  Scenario: index with query
+    When we HTTP GET "/" with query "foo=bar"
+    Then our HTTP response should be like:
+    """
+    [
+      {_id: constants.ONE},
+      {_id: '2'}
+    ]
+    """
+
   Scenario: get
     When we HTTP GET "/${constants.ONE}"
     Then our HTTP response should be like:

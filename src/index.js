@@ -38,7 +38,7 @@ export default function(context) {
       }
     })
 
-    When('we HTTP GET "{path}"', async function(path) {
+    When(/^we HTTP GET "([^"]+)"$/, async function(path) {
       await httpGet({path, context})
     })
 
