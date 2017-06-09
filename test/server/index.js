@@ -55,6 +55,19 @@ app.put('/:id', (req, res) => {
   }
 })
 
+app.patch('/:id', (req, res) => {
+  dbg('patch: id=%o, body=%o', req.params.id, req.body)
+  const data = getState('data')
+  const idx = _.findIndex(data, {_id: req.params.id})
+  if (idx < 0) {
+    res.status(404).send('not found')
+  } else {
+    data[idx] = {...data[idx], ...req.body}
+    dbg('patch: state=%o', getState())
+    res.status(204).send('patched')
+  }
+})
+
 app.delete('/:id', (req, res) => {
   dbg('delete: id=%o', req.params.id)
   const data = getState('data')
@@ -69,7 +82,7 @@ app.delete('/:id', (req, res) => {
 })
 
 // eslint-disable-next-line no-unused-vars
-app.use(function (err, req, res, next) {
+app.use(function(err, req, res, next) {
   dbg(err.stack)
   res.status(500).send(`error: ${err}`)
 })

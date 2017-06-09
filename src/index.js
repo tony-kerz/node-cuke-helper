@@ -46,9 +46,9 @@ export default function(context) {
       await httpGet({path, query, context})
     })
 
-    When(/^we HTTP (POST|PUT) "([^"]+)" with body:$/, async function(action, path, bodyString) {
+    When(/^we HTTP (POST|PUT|PATCH) "([^"]+)" with body:$/, async function(method, path, bodyString) {
       const body = evalInContext({js: bodyString, context})
-      await httpUpdate({action, path, body, context})
+      await httpUpdate({method, path, data: body, context})
     })
 
     When('we HTTP DELETE "{path}"', async function(path) {
@@ -122,12 +122,12 @@ async function httpGet({path, query, context}) {
   }
 }
 
-async function httpUpdate({action, path, body, context}) {
+async function httpUpdate({method, path, data, context}) {
   try {
     const url = getUrl(path, {context, port})
     const headers = getState('headers')
-    dbg('http-post: action=%o, url=%o, body=%o, headers=%o', action, url, body, headers)
-    const response = action === 'POST' ? await axios.post(url, body, {headers}) : await axios.put(url, body, {headers})
+    dbg('http-update: method=%o, url=%o, data=%o, headers=%o', method, url, data, headers)
+    const response = await axios(url, {method, data, headers})
     setResponseState(response)
   } catch (err) {
     dbg('caught error=%o', err)
