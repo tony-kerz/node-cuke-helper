@@ -74,6 +74,22 @@ Feature: test
     }
     """
 
+  Scenario: patch
+    When we HTTP PATCH "/2" with body:
+    """
+    {name: 'two'}
+    """
+    Then our HTTP response should have status code 204
+    And our resultant state should be like:
+    """
+    {
+      data: [
+        {},
+        {_id: '2', name: 'two'}
+      ]
+    }
+    """
+
   Scenario: update non-existent client
     When we HTTP PUT "/nope" with body:
     """
