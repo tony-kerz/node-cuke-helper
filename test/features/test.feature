@@ -11,7 +11,7 @@ Feature: test
     """
 
   Scenario: index
-    When we HTTP GET "/"
+    When we HTTP GET '/'
     Then our HTTP response should be like:
     """
     [
@@ -21,7 +21,7 @@ Feature: test
     """
 
   Scenario: index with query
-    When we HTTP GET "/" with query "foo=bar"
+    When we HTTP GET '/' with query 'foo=bar'
     Then our HTTP response should be like:
     """
     [
@@ -31,14 +31,14 @@ Feature: test
     """
 
   Scenario: get
-    When we HTTP GET "/${constants.ONE}"
+    When we HTTP GET '/${constants.ONE}'
     Then our HTTP response should be like:
     """
     {_id: '1'}
     """
 
   Scenario: get non-existent
-    When we HTTP GET "/nope"
+    When we HTTP GET '/nope'
     Then our HTTP response should have status code 404
 
   Scenario: create
@@ -59,7 +59,7 @@ Feature: test
     """
 
   Scenario: update
-    When we HTTP PUT "/2" with body:
+    When we HTTP PUT '/2' with body:
     """
     {_id: '2', name: 'two'}
     """
@@ -75,7 +75,7 @@ Feature: test
     """
 
   Scenario: patch
-    When we HTTP PATCH "/2" with body:
+    When we HTTP PATCH '/2' with body:
     """
     {name: 'two'}
     """
@@ -91,14 +91,14 @@ Feature: test
     """
 
   Scenario: update non-existent client
-    When we HTTP PUT "/nope" with body:
+    When we HTTP PUT '/nope' with body:
     """
     {foo: 'bar'}
     """
     Then our HTTP response should have status code 404
 
   Scenario: delete
-    When we HTTP DELETE "/1"
+    When we HTTP DELETE '/1'
     Then our HTTP response should have status code 204
     And our resultant state should be like:
     """
@@ -110,7 +110,7 @@ Feature: test
     """
 
   Scenario: delete non-existent
-    When we HTTP DELETE "/nope"
+    When we HTTP DELETE '/nope'
     Then our HTTP response should have status code 404
 
   Scenario: user
