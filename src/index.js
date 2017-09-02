@@ -4,6 +4,7 @@ import debug from 'debug'
 import config from 'config'
 import _ from 'lodash'
 import axios from 'axios'
+// import {defineSupportCode, ParameterTypeRegistry, ParameterType} from 'cucumber'
 import {defineSupportCode} from 'cucumber'
 import {diffConsole, isLike, isLikeHooks} from 'helpr'
 import {evalInContext, setState, getState, getUrl} from 'test-helpr'
@@ -13,6 +14,20 @@ import {evalInContext, setState, getState, getUrl} from 'test-helpr'
 const port = config.get('listener.port')
 
 const dbg = debug('app:http:steps')
+
+const updateVerbs = ['POST', 'PUT', 'PATCH']
+
+// const registry = new ParameterTypeRegistry()
+// registry.defineParameterType(
+//   new ParameterType(
+//     'verb',
+//     /POST|PUT|PATCH/,
+//     String,
+//     s => s,
+//     false, // useForSnippets
+//     true // preferForRegexpMatch
+//   )
+// )
 
 export default function(context) {
   defineSupportCode(({Given, When, Then}) => {
@@ -38,24 +53,27 @@ export default function(context) {
       }
     })
 
-    When(/^we HTTP GET "([^"]+)"$/, async function(path) {
+    //    When(/^we HTTP GET "([^"]+)"$/, async function(path) {
+    When('we HTTP GET {string}', async function(path) {
       await httpGet({path, context})
     })
 
-    When('we HTTP GET "{path}" with query "{query}"', async function(path, query) {
+    When('we HTTP GET {string} with query {string}', async function(path, query) {
       await httpGet({path, query, context})
     })
 
-    When(/^we HTTP (POST|PUT|PATCH) "([^"]+)" with body:$/, async function(method, path, bodyString) {
+    // When(/^we HTTP (POST|PUT|PATCH) "([^"]+)" with body:$/, async function(
+    When('we HTTP {word} {string} with body:', async function(method, path, bodyString) {
+      assert(updateVerbs.includes(method), `one of ${updateVerbs} required`)
       const body = evalInContext({js: bodyString, context})
       await httpUpdate({method, path, data: body, context})
     })
 
-    When('we HTTP DELETE "{path}"', async function(path) {
+    When('we HTTP DELETE {string}', async function(path) {
       await httpDelete({path, context})
     })
 
-    Then('our HTTP response should be "{response}"', function(expectedString, callback) {
+    Then('our HTTP response should be {string}', function(expectedString, callback) {
       const expected = evalInContext({js: expectedString, context})
       dbg('then-http-response-should-be: expected=%o', expected)
       const {data: actual} = getState('response')
@@ -77,13 +95,13 @@ export default function(context) {
       callback()
     })
 
-    Then('our HTTP response should have status code {status}', function(status, callback) {
+    Then('our HTTP response should have status code {int}', function(status, callback) {
       const error = getState('response')
       assert.equal(error.status, status)
       callback()
     })
 
-    Then('our HTTP headers should include "{header}"', function(header, callback) {
+    Then('our HTTP headers should include {word}', function(header, callback) {
       const response = getState('response')
       assert(_.has(response.headers, header))
       callback()

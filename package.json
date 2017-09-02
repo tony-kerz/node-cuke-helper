@@ -18,24 +18,24 @@
   "author": "tony kerz",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.15.3",
-    "config": "^1.25.1",
-    "debug": "^2.6.1",
-    "express-jwt": "^5.1.0",
-    "helpr": "^0.12.0",
+    "axios": "^0.16.2",
+    "config": "^1.26.2",
+    "debug": "^3.0.1",
+    "express-jwt": "^5.3.0",
+    "helpr": "^0.16.4",
     "lodash": "^4.17.4",
     "test-helpr": "^0.3.2"
   },
   "devDependencies": {
-    "babel-cli": "^6.23.0",
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
-    "babel-polyfill": "^6.23.0",
-    "babel-preset-env": "^1.1.10",
-    "body-parser": "^1.16.1",
-    "cross-env": "^3.1.4",
-    "cucumber": "^2.3.0",
-    "express": "^4.14.1",
-    "xo": "^0.17.1"
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
+    "body-parser": "^1.17.2",
+    "cross-env": "^5.0.5",
+    "cucumber": "^3.0.1",
+    "express": "^4.15.4",
+    "xo": "^0.18.2"
   },
   "xo": {
     "space": true,
@@ -61,7 +61,9 @@
       "unicorn/prefer-type-error": "off",
       "unicorn/explicit-length-check": "off",
       "unicorn/no-abusive-eslint-disable": "off",
-      "space-before-function-paren": "off"
+      "space-before-function-paren": "off",
+      "capitalized-comments": "off",
+      "prefer-arrow-callback": "off"
     }
   }
 }
