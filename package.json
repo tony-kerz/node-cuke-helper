@@ -31,9 +31,9 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.0",
-    "body-parser": "^1.17.2",
+    "body-parser": "^1.18.1",
     "cross-env": "^5.0.5",
-    "cucumber": "^3.0.1",
+    "cucumber": "^3.0.2",
     "express": "^4.15.4",
     "xo": "^0.18.2"
   },

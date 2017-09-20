@@ -4,8 +4,7 @@ import debug from 'debug'
 import config from 'config'
 import _ from 'lodash'
 import axios from 'axios'
-// import {defineSupportCode, ParameterTypeRegistry, ParameterType} from 'cucumber'
-import {defineSupportCode} from 'cucumber'
+import {defineSupportCode, defineParameterType} from 'cucumber'
 import {diffConsole, isLike, isLikeHooks} from 'helpr'
 import {evalInContext, setState, getState, getUrl} from 'test-helpr'
 
@@ -15,19 +14,10 @@ const port = config.get('listener.port')
 
 const dbg = debug('app:http:steps')
 
-const updateVerbs = ['POST', 'PUT', 'PATCH']
-
-// const registry = new ParameterTypeRegistry()
-// registry.defineParameterType(
-//   new ParameterType(
-//     'verb',
-//     /POST|PUT|PATCH/,
-//     String,
-//     s => s,
-//     false, // useForSnippets
-//     true // preferForRegexpMatch
-//   )
-// )
+defineParameterType({
+  name: 'verb',
+  regexp: /POST|PUT|PATCH/
+})
 
 export default function(context) {
   defineSupportCode(({Given, When, Then}) => {
@@ -53,7 +43,6 @@ export default function(context) {
       }
     })
 
-    //    When(/^we HTTP GET "([^"]+)"$/, async function(path) {
     When('we HTTP GET {string}', async function(path) {
       await httpGet({path, context})
     })
@@ -62,9 +51,7 @@ export default function(context) {
       await httpGet({path, query, context})
     })
 
-    // When(/^we HTTP (POST|PUT|PATCH) "([^"]+)" with body:$/, async function(
-    When('we HTTP {word} {string} with body:', async function(method, path, bodyString) {
-      assert(updateVerbs.includes(method), `one of ${updateVerbs} required`)
+    When('we HTTP {verb} {string} with body:', async function(method, path, bodyString) {
       const body = evalInContext({js: bodyString, context})
       await httpUpdate({method, path, data: body, context})
     })
@@ -101,7 +88,7 @@ export default function(context) {
       callback()
     })
 
-    Then('our HTTP headers should include {word}', function(header, callback) {
+    Then('our HTTP headers should include {string}', function(header, callback) {
       const response = getState('response')
       assert(_.has(response.headers, header))
       callback()

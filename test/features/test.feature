@@ -32,7 +32,9 @@ Feature: test
 
   Scenario: get
     When we HTTP GET '/${constants.ONE}'
-    Then our HTTP response should be like:
+    Then our HTTP response should have status code 200
+    And our HTTP headers should include 'x-powered-by'
+    And our HTTP response should be like:
     """
     {_id: '1'}
     """
